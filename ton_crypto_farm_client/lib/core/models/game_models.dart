@@ -74,6 +74,21 @@ class ResourceBalances {
   Map<String, dynamic> toJson() => _$ResourceBalancesToJson(this);
 }
 
+enum ToolType { fishingRod, axe, pickaxe }
+enum LandType { lake, forest, mountain }
+
+toolTypeFromJson(dynamic value) {
+  if (value is int) return ToolType.values[value];
+  if (value is String) return ToolType.values.firstWhere((e) => e.toString().split('.').last == value);
+  throw Exception('Invalid ToolType value: $value');
+}
+
+landTypeFromJson(dynamic value) {
+  if (value is int) return LandType.values[value];
+  if (value is String) return LandType.values.firstWhere((e) => e.toString().split('.').last == value);
+  throw Exception('Invalid LandType value: $value');
+}
+
 @JsonSerializable()
 class ToolNFT {
   final String id;
@@ -90,7 +105,13 @@ class ToolNFT {
     required this.owner,
   });
 
-  factory ToolNFT.fromJson(Map<String, dynamic> json) => _$ToolNFTFromJson(json);
+  factory ToolNFT.fromJson(Map<String, dynamic> json) => ToolNFT(
+    id: json['id'] as String,
+    type: toolTypeFromJson(json['type']),
+    level: json['level'] as int,
+    durability: json['durability'] as int,
+    owner: json['owner'] as String,
+  );
   Map<String, dynamic> toJson() => _$ToolNFTToJson(this);
 }
 
@@ -108,12 +129,15 @@ class LandNFT {
     required this.owner,
   });
 
-  factory LandNFT.fromJson(Map<String, dynamic> json) => _$LandNFTFromJson(json);
+  factory LandNFT.fromJson(Map<String, dynamic> json) => LandNFT(
+    id: json['id'] as String,
+    type: landTypeFromJson(json['type']),
+    level: json['level'] as int,
+    owner: json['owner'] as String,
+  );
   Map<String, dynamic> toJson() => _$LandNFTToJson(this);
 }
 
-enum ToolType { fishingRod, axe, pickaxe }
-enum LandType { lake, forest, mountain }
 enum ResourceType { food, wood, gold }
 
 @JsonSerializable()

@@ -166,7 +166,7 @@ class ToolNFT {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'type': type.index,
+      'type': type.toString().split('.').last, // Serialize as string
       'level': level,
       'durability': durability,
       'owner': owner,
@@ -175,9 +175,14 @@ class ToolNFT {
   }
 
   factory ToolNFT.fromMap(Map<String, dynamic> map) {
+    ToolType parseToolType(dynamic value) {
+      if (value is int) return ToolType.values[value];
+      if (value is String) return ToolType.values.firstWhere((e) => e.toString().split('.').last == value);
+      throw Exception('Invalid ToolType value: $value');
+    }
     return ToolNFT(
       id: map['id'] as String,
-      type: ToolType.values[map['type'] as int],
+      type: parseToolType(map['type']),
       level: map['level'] as int,
       durability: map['durability'] as int,
       owner: map['owner'] as String,
@@ -234,7 +239,7 @@ class LandNFT {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'type': type.index,
+      'type': type.toString().split('.').last, // Serialize as string
       'level': level,
       'owner': owner,
       'createdAt': createdAt.toIso8601String(),
@@ -242,9 +247,14 @@ class LandNFT {
   }
 
   factory LandNFT.fromMap(Map<String, dynamic> map) {
+    LandType parseLandType(dynamic value) {
+      if (value is int) return LandType.values[value];
+      if (value is String) return LandType.values.firstWhere((e) => e.toString().split('.').last == value);
+      throw Exception('Invalid LandType value: $value');
+    }
     return LandNFT(
       id: map['id'] as String,
-      type: LandType.values[map['type'] as int],
+      type: parseLandType(map['type']),
       level: map['level'] as int,
       owner: map['owner'] as String,
       createdAt: DateTime.parse(map['createdAt'] as String),

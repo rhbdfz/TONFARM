@@ -59,7 +59,7 @@ Map<String, dynamic> _$ResourceBalancesToJson(ResourceBalances instance) =>
 
 ToolNFT _$ToolNFTFromJson(Map<String, dynamic> json) => ToolNFT(
       id: json['id'] as String,
-      type: $enumDecode(_$ToolTypeEnumMap, json['type']),
+      type: toolTypeFromJson(json['type']),
       level: (json['level'] as num).toInt(),
       durability: (json['durability'] as num).toInt(),
       owner: json['owner'] as String,
@@ -81,7 +81,7 @@ const _$ToolTypeEnumMap = {
 
 LandNFT _$LandNFTFromJson(Map<String, dynamic> json) => LandNFT(
       id: json['id'] as String,
-      type: $enumDecode(_$LandTypeEnumMap, json['type']),
+      type: landTypeFromJson(json['type']),
       level: (json['level'] as num).toInt(),
       owner: json['owner'] as String,
     );

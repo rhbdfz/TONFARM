@@ -13,12 +13,21 @@ class GameController {
       final data = jsonDecode(body);
 
       final playerId = data['playerId'] as String;
-      final toolType = data['toolType'] as int;
+      // Accept both string and int for toolType
+      int toolTypeIndex;
+      if (data['toolType'] is int) {
+        toolTypeIndex = data['toolType'];
+      } else if (data['toolType'] is String) {
+        toolTypeIndex = ToolType.values.indexWhere((e) => e.toString().split('.').last == data['toolType']);
+        if (toolTypeIndex == -1) throw Exception('Invalid toolType value');
+      } else {
+        throw Exception('Invalid toolType type');
+      }
       final level = data['level'] as int;
       final playerAddress = data['playerAddress'] as String;
 
       // Получение рецепта
-      final recipe = RecipeCalculator.getRecipe(toolType, level);
+      final recipe = RecipeCalculator.getRecipe(toolTypeIndex, level);
 
       // Проверка ресурсов игрока
       final gameStateData = await FirebaseService.getGameState(playerId);
@@ -40,7 +49,7 @@ class GameController {
       // Создание сообщения для контракта
       final craftMessage = await TonService.createCraftMessage(
         playerAddress,
-        toolType,
+        toolTypeIndex,
         level,
         recipe,
       );
@@ -50,7 +59,7 @@ class GameController {
           'success': true,
           'contractAddress': craftMessage['to'],
           'message': craftMessage,
-          'recipe': recipe,
+          'requirements': recipe, // Use 'requirements' instead of 'recipe'
           'estimatedFee': '0.05',
         }),
         headers: {'Content-Type': 'application/json'},

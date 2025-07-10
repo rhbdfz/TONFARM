@@ -54,7 +54,7 @@ class WebSocketService {
 
   static void notifyGameStateUpdate(String playerId, Map<String, dynamic> gameState) {
     sendToPlayer(playerId, {
-      'type': 'game_state_update',
+      'type': 'gameStateUpdate',
       'data': gameState,
       'timestamp': DateTime.now().toIso8601String(),
     });
@@ -62,7 +62,7 @@ class WebSocketService {
 
   static void notifyResourceUpdate(String playerId, Map<String, int> resources) {
     sendToPlayer(playerId, {
-      'type': 'resources_changed',
+      'type': 'resourcesChanged',
       'resources': resources,
       'timestamp': DateTime.now().toIso8601String(),
     });
@@ -70,7 +70,7 @@ class WebSocketService {
 
   static void notifyEnergyUpdate(String playerId, int energy) {
     sendToPlayer(playerId, {
-      'type': 'energy_changed',
+      'type': 'energyChanged',
       'energy': energy,
       'timestamp': DateTime.now().toIso8601String(),
     });
@@ -78,7 +78,7 @@ class WebSocketService {
 
   static void notifyTransactionConfirmed(String playerId, String transactionHash) {
     sendToPlayer(playerId, {
-      'type': 'transaction_confirmed',
+      'type': 'transactionConfirmed',
       'transactionHash': transactionHash,
       'timestamp': DateTime.now().toIso8601String(),
     });
