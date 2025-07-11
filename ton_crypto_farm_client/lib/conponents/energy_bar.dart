@@ -4,33 +4,33 @@ class EnergyBar extends StatelessWidget {
   final int energy;
   final int maxEnergy;
 
-  const EnergyBar({
-    Key? key,
-    required this.energy,
-    this.maxEnergy = 100,
-  }) : super(key: key);
+  const EnergyBar({super.key, required this.energy, this.maxEnergy = 100});
 
   @override
   Widget build(BuildContext context) {
     final percentage = energy / maxEnergy;
-
+    
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Energy',
-                  style: Theme.of(context).textTheme.titleMedium,
+                const Text(
+                  'Энергия',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Text(
                   '$energy/$maxEnergy',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
                   ),
                 ),
               ],
@@ -40,18 +40,13 @@ class EnergyBar extends StatelessWidget {
               value: percentage,
               backgroundColor: Colors.grey[300],
               valueColor: AlwaysStoppedAnimation<Color>(
-                _getEnergyColor(percentage),
+                percentage > 0.5 ? Colors.green : 
+                percentage > 0.2 ? Colors.orange : Colors.red,
               ),
             ),
           ],
         ),
       ),
     );
-  }
-
-  Color _getEnergyColor(double percentage) {
-    if (percentage > 0.6) return Colors.green;
-    if (percentage > 0.3) return Colors.orange;
-    return Colors.red;
   }
 }

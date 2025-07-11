@@ -77,13 +77,13 @@ class ResourceBalances {
 enum ToolType { fishingRod, axe, pickaxe }
 enum LandType { lake, forest, mountain }
 
-toolTypeFromJson(dynamic value) {
+ToolType toolTypeFromJson(dynamic value) {
   if (value is int) return ToolType.values[value];
   if (value is String) return ToolType.values.firstWhere((e) => e.toString().split('.').last == value);
   throw Exception('Invalid ToolType value: $value');
 }
 
-landTypeFromJson(dynamic value) {
+LandType landTypeFromJson(dynamic value) {
   if (value is int) return LandType.values[value];
   if (value is String) return LandType.values.firstWhere((e) => e.toString().split('.').last == value);
   throw Exception('Invalid LandType value: $value');

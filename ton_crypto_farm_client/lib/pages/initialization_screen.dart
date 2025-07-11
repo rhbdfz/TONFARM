@@ -4,7 +4,7 @@ import '../providers/game_provider.dart';
 import 'game_dashboard.dart';
 
 class InitializationScreen extends StatefulWidget {
-  const InitializationScreen({Key? key}) : super(key: key);
+  const InitializationScreen({super.key});
 
   @override
   State<InitializationScreen> createState() => _InitializationScreenState();

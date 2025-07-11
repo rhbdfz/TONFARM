@@ -32,7 +32,7 @@ class GameProvider extends ChangeNotifier {
         throw Exception('Telegram user not found');
       }
 
-      await registerPlayer(telegramUser.id.toString(), telegramUser.username);
+      await registerPlayer(telegramUser['id'].toString(), telegramUser['username'] ?? 'Unknown');
       await _setupWebSocket();
     } catch (e) {
       _setError('Initialization error: $e');
@@ -70,15 +70,26 @@ class GameProvider extends ChangeNotifier {
       final result = await _tonService.connectWallet();
 
       if (result != null && _player != null) {
-        await _apiService.linkWallet(_player!.id, result.address);
-        _player = Player(
-          id: _player!.id,
-          telegramId: _player!.telegramId,
-          username: _player!.username,
-          walletAddress: result.address,
-          createdAt: _player!.createdAt,
-        );
-        notifyListeners();
+        // Handle the dynamic result - extract address if available
+        String? walletAddress;
+        if (result is Map<String, dynamic>) {
+          walletAddress = result['address'] as String?;
+        } else if (result.toString().contains('address')) {
+          // Fallback for other result types
+          walletAddress = result.toString();
+        }
+        
+        if (walletAddress != null) {
+          await _apiService.linkWallet(_player!.id, walletAddress);
+          _player = Player(
+            id: _player!.id,
+            telegramId: _player!.telegramId,
+            username: _player!.username,
+            walletAddress: walletAddress,
+            createdAt: _player!.createdAt,
+          );
+          notifyListeners();
+        }
       }
     } catch (e) {
       _setError('Wallet connection failed: $e');

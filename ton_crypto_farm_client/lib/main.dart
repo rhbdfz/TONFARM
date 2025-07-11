@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_telegram_miniapp/flutter_telegram_miniapp.dart';
 import 'package:provider/provider.dart';
 import 'core/services/ton_service.dart';
 import 'core/services/api_service.dart';
@@ -18,7 +17,7 @@ void main() async {
 }
 
 class TONFarmApp extends StatelessWidget {
-  const TONFarmApp({Key? key}) : super(key: key);
+  const TONFarmApp({super.key});
 
   @override
   Widget build(BuildContext context) {

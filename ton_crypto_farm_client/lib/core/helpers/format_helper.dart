@@ -28,7 +28,7 @@ class FormatHelper {
     final minutes = duration.inMinutes.remainder(60);
 
     if (hours > 0) {
-      return '${hours}ч ${minutes}м';
+      return '$hoursч $minutesм';
     } else {
       return '${minutes}м';
     }

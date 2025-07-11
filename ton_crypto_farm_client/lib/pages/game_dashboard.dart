@@ -7,7 +7,7 @@ import '../providers/game_provider.dart';
 import '../core/models/game_models.dart';
 
 class GameDashboard extends StatelessWidget {
-  const GameDashboard({Key? key}) : super(key: key);
+  const GameDashboard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -60,91 +60,100 @@ class GameDashboard extends StatelessWidget {
                   const SizedBox(height: 16),
                   ToolInventory(tools: gameState.tools),
                   const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: gameProvider.isLoading
-                              ? null
-                              : () => _showHarvestDialog(context, gameProvider),
-                          icon: const Icon(Icons.agriculture),
-                          label: const Text('Farm'),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: gameProvider.isLoading
-                              ? null
-                              : () => _showCraftDialog(context, gameProvider),
-                          icon: const Icon(Icons.build),
-                          label: const Text('Craft'),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  OutlinedButton.icon(
-                    onPressed: () {
-                      // Navigate to marketplace
-                    },
-                    icon: const Icon(Icons.store),
-                    label: const Text('Marketplace'),
-                  ),
+                  _buildActionButtons(context, gameProvider),
                 ],
               ),
             ),
           );
         },
       ),
+      bottomNavigationBar: _buildBottomNavigation(),
     );
   }
 
-  void _showHarvestDialog(BuildContext context, GameProvider gameProvider) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Harvest Resources'),
-        content: const Text('Select a tool to harvest resources'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          if (gameProvider.gameState?.tools.isNotEmpty ?? false)
-            TextButton(
-              onPressed: () {
-                final firstTool = gameProvider.gameState!.tools.first;
-                gameProvider.harvestResources(firstTool.id, null);
-                Navigator.pop(context);
-              },
-              child: const Text('Harvest'),
+  Widget _buildActionButtons(BuildContext context, GameProvider gameProvider) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  // Navigate to crafting screen
+                },
+                icon: const Icon(Icons.build),
+                label: const Text('Крафт'),
+              ),
             ),
-        ],
-      ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  // Navigate to farming screen
+                },
+                icon: const Icon(Icons.agriculture),
+                label: const Text('Фарм'),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  // Navigate to marketplace
+                },
+                icon: const Icon(Icons.store),
+                label: const Text('Маркет'),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  // Navigate to inventory
+                },
+                icon: const Icon(Icons.inventory),
+                label: const Text('Инвентарь'),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
-  void _showCraftDialog(BuildContext context, GameProvider gameProvider) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Craft Tool'),
-        content: const Text('Choose a tool to craft'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              gameProvider.craftTool(ToolType.fishingRod, 1);
-              Navigator.pop(context);
-            },
-            child: const Text('Craft Fishing Rod'),
-          ),
-        ],
-      ),
+  Widget _buildBottomNavigation() {
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Главная',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.agriculture),
+          label: 'Фарм',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.build),
+          label: 'Крафт',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.store),
+          label: 'Маркет',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Профиль',
+        ),
+      ],
+      currentIndex: 0,
+      onTap: (index) {
+        // Handle navigation
+      },
     );
   }
 }

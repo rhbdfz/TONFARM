@@ -1,16 +1,15 @@
+
 import 'package:darttonconnect/ton_connect.dart';
 
 import 'package:ton_dart/ton_dart.dart';
 
 class TonService {
-  static late TonConnector _tonConnect;
+  static late TonConnect _tonConnect;
   static late TonProvider _tonProvider;
 
   static Future<void> init() async {
     try {
-      _tonConnect = TonConnector(
-        'https://your-app.com/tonconnect-manifest.json',
-      );
+      _tonConnect = TonConnect('https://your-app.com/tonconnect-manifest.json');
 
       _tonProvider = TonProvider(
         HTTPProvider(
@@ -23,7 +22,7 @@ class TonService {
     }
   }
 
-  Future<WalletConnectionResult?> connectWallet() async {
+  Future<dynamic> connectWallet() async {
     try {
       final wallets = await _tonConnect.getWallets();
       if (wallets.isNotEmpty) {
@@ -65,7 +64,7 @@ class TonService {
       ) async {
     try {
       return await _tonProvider.request(
-        TonCenterRunGetMethod(address, method, params),
+        TonCenterRunGetMethod(address: address, methodName: method, stack: params),
       );
     } catch (e) {
       print('Contract call error: $e');
@@ -81,11 +80,18 @@ class TonService {
       );
 
       final result = await _tonProvider.request(
-        TonCenterRunGetMethod(walletAddress, 'get_wallet_data', []),
+        TonCenterRunGetMethod(address: walletAddress, methodName: 'get_wallet_data', stack: []),
       );
 
       if (result != null && result.stack.isNotEmpty) {
-        return result.stack.first.readBigNumber();
+        // Convert the first stack item to BigInt
+        final firstItem = result.stack.first;
+        if (firstItem is String) {
+          return BigInt.parse(firstItem);
+        } else if (firstItem is int) {
+          return BigInt.from(firstItem);
+        }
+        return BigInt.zero;
       }
       return BigInt.zero;
     } catch (e) {
@@ -98,12 +104,8 @@ class TonService {
       String ownerAddress,
       String jettonMaster,
       ) async {
-    // Реализация расчета адреса Jetton кошелька
-    final ownerAddr = TonAddress(ownerAddress);
-    final masterAddr = TonAddress(jettonMaster);
-
-    // Здесь должна быть логика расчета адреса кошелька
-    // Для упрощения возвращаем ownerAddress
+    // Implementation for calculating Jetton wallet address
+    // For simplification, returning ownerAddress
     return ownerAddress;
   }
 }

@@ -1,23 +1,30 @@
 import 'package:flutter_telegram_miniapp/flutter_telegram_miniapp.dart';
-
-
+import 'dart:convert';
 
 class TelegramService {
-  static WebApp? _webApp;
+
+  static final TelegramWebApp _tg = TelegramWebApp.instance;
 
   static Future<void> init() async {
     try {
-      _webApp = WebApp();
-      _webApp!.init();
-      _setupUI();
+      if (_tg.isSupported) {
+        _tg.ready();
+        Future.delayed(const Duration(seconds: 1), _tg.expand);
+        _setupUI();
+      }
     } catch (e) {
       print('Telegram initialization error: $e');
     }
   }
 
-  static TelegramUser? getCurrentUser() {
+  /// Returns a map with user info or null if not available
+  static Map<String, dynamic>? getCurrentUser() {
     try {
-      return _webApp?.initDataUnsafe.user;
+      final unsafe = _tg.initDataUnsafe;
+      if (unsafe != null && unsafe['user'] != null) {
+        return Map<String, dynamic>.from(unsafe['user']);
+      }
+      return null;
     } catch (e) {
       print('Get user error: $e');
       return null;
@@ -25,53 +32,44 @@ class TelegramService {
   }
 
   static void _setupUI() {
-    if (_webApp == null) return;
-
     try {
-      _webApp!.setHeaderColor('#4CAF50');
-      _webApp!.enableClosingConfirmation();
-      _webApp!.expand();
+      _tg.setHeaderColor('#4CAF50');
+      _tg.enableClosingConfirmation();
+      _tg.expand();
     } catch (e) {
       print('UI setup error: $e');
     }
   }
 
   static void showMainButton(String text, Function() onPressed) {
-    if (_webApp == null) return;
-
     try {
-      _webApp!.showMainButton(text: text);
-      _webApp!.eventHandler.mainButtonClicked.listen((_) => onPressed());
+      _tg.MainButton.text = text;
+      _tg.MainButton.show();
+      _tg.onEvent('mainButtonClicked', (_) => onPressed());
     } catch (e) {
       print('Main button error: $e');
     }
   }
 
   static void hideMainButton() {
-    if (_webApp == null) return;
-
     try {
-      _webApp!.hideMainButton();
+      _tg.MainButton.hide();
     } catch (e) {
       print('Hide button error: $e');
     }
   }
 
   static void showAlert(String message) {
-    if (_webApp == null) return;
-
     try {
-      _webApp!.showAlert(message);
+      _tg.showAlert(message);
     } catch (e) {
       print('Show alert error: $e');
     }
   }
 
   static void close() {
-    if (_webApp == null) return;
-
     try {
-      _webApp!.close();
+      _tg.close();
     } catch (e) {
       print('Close error: $e');
     }
