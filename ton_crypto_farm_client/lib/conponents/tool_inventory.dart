@@ -116,7 +116,7 @@ class ToolInventory extends StatelessWidget {
   IconData _getToolIcon(ToolType type) {
     switch (type) {
       case ToolType.fishingRod:
-        return Icons.fishing;
+        return Icons.water;
       case ToolType.axe:
         return Icons.forest;
       case ToolType.pickaxe:

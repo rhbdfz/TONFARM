@@ -3,7 +3,7 @@ import 'dart:convert';
 
 class TelegramService {
 
-  static final TelegramWebApp _tg = TelegramWebApp.instance;
+  static final TelegramMiniApp _tg = TelegramMiniApp.instance;
 
   static Future<void> init() async {
     try {

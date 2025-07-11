@@ -12,9 +12,8 @@ class TonService {
       _tonConnect = TonConnect('https://your-app.com/tonconnect-manifest.json');
 
       _tonProvider = TonProvider(
-        HTTPProvider(
-          tonApiUrl: "https://tonapi.io",
-          tonCenterUrl: "https://toncenter.com/api/v2/jsonRPC",
+        TonCenterProvider(
+          apiUrl: "https://toncenter.com/api/v2/jsonRPC",
         ),
       );
     } catch (e) {

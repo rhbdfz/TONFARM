@@ -4,7 +4,6 @@ import '../conponents/energy_bar.dart';
 import '../conponents/resource_display.dart';
 import '../conponents/tool_inventory.dart';
 import '../providers/game_provider.dart';
-import '../core/models/game_models.dart';
 
 class GameDashboard extends StatelessWidget {
   const GameDashboard({super.key});

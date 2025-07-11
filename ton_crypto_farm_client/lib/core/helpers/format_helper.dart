@@ -30,7 +30,7 @@ class FormatHelper {
     if (hours > 0) {
       return '$hoursч $minutesм';
     } else {
-      return '${minutes}м';
+      return '$minutesм';
     }
   }
 
