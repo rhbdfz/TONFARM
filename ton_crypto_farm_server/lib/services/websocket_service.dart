@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WebSocketService {
-  static final Map<String, WebSocketSink> _connections = {};
+  static final Map<String, WebSocketChannel> _connections = {};
   static final Map<String, Timer> _heartbeats = {};
 
-  static void handleConnection(WebSocketSink webSocket, String playerId) {
+  static void handleConnection(WebSocketChannel webSocket, String playerId) {
     print('WebSocket connection established for player: $playerId');
 
     _connections[playerId] = webSocket;
@@ -20,7 +20,7 @@ class WebSocketService {
     });
 
     // Настройка обработки закрытия соединения
-    webSocket.done.then((_) {
+    webSocket.sink.done.then((_) {
       _removeConnection(playerId);
     }).catchError((error) {
       print('WebSocket error for player $playerId: $error');
@@ -32,7 +32,7 @@ class WebSocketService {
     final connection = _connections[playerId];
     if (connection != null) {
       try {
-        connection.add(jsonEncode(message));
+        connection.sink.add(jsonEncode(message));
       } catch (e) {
         print('Error sending message to player $playerId: $e');
         _removeConnection(playerId);
@@ -44,7 +44,7 @@ class WebSocketService {
     final messageJson = jsonEncode(message);
     for (final entry in _connections.entries) {
       try {
-        entry.value.add(messageJson);
+        entry.value.sink.add(messageJson);
       } catch (e) {
         print('Error broadcasting to player ${entry.key}: $e');
         _removeConnection(entry.key);

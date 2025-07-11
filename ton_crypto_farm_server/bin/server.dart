@@ -5,12 +5,12 @@ import 'package:shelf_router/shelf_router.dart';
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:shelf_web_socket/shelf_web_socket.dart';
 import 'package:dotenv/dotenv.dart';
-import '../lib/controllers/player_controller.dart';
-import '../lib/controllers/game_controller.dart';
-import '../lib/services/firebase_service.dart';
-import '../lib/services/ton_service.dart';
-import '../lib/services/websocket_service.dart';
-import '../lib/middleware/auth_middleware.dart';
+import 'package:ton_crypto_farm_server/controllers/game_controller.dart';
+import 'package:ton_crypto_farm_server/controllers/player_controller.dart';
+import 'package:ton_crypto_farm_server/services/firebase_service.dart';
+import 'package:ton_crypto_farm_server/services/ton_service.dart';
+import 'package:ton_crypto_farm_server/services/websocket_service.dart';
+import 'package:ton_crypto_farm_server/middleware/auth_middleware.dart';
 
 void main() async {
   // Загрузка переменных окружения
@@ -39,20 +39,20 @@ void main() async {
 
   // WebSocket для реального времени
   router.get('/ws/<playerId>', webSocketHandler((webSocket, request) {
-    final playerId = request.params['playerId']!;
+    final params = request.params;
+    final playerId = params?['playerId'] ?? '';
     WebSocketService.handleConnection(webSocket, playerId);
   }));
 
-  // Middleware pipeline
-  final pipeline = Pipeline()
-      .addMiddleware(corsHeaders())
+  // Middleware
+  final handler = Pipeline()
       .addMiddleware(logRequests())
       .addMiddleware(authMiddleware)
-      .addHandler(router);
+      .addHandler(router.call);
 
   // Запуск сервера
   final port = int.parse(env['PORT'] ?? '8080');
-  final server = await io.serve(pipeline, 'localhost', port);
+  final server = await io.serve(handler, 'localhost', port);
 
   print('Server running on http://localhost:$port');
 

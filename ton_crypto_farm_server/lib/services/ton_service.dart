@@ -2,7 +2,6 @@ import 'package:ton_dart/ton_dart.dart';
 
 class TonService {
   static late TonProvider _provider;
-  static const String _tonApiUrl = 'https://tonapi.io';
   static const String _tonCenterUrl = 'https://toncenter.com/api/v2/jsonRPC';
 
   // Адреса контрактов (заглушки)
@@ -15,12 +14,7 @@ class TonService {
 
   static Future<void> init() async {
     try {
-      _provider = TonProvider(
-        HTTPProvider(
-          tonApiUrl: _tonApiUrl,
-          tonCenterUrl: _tonCenterUrl,
-        ),
-      );
+      _provider = TonProvider(TonApiProvider(apiUrl: _tonCenterUrl));
       print('TON Service initialized successfully');
     } catch (e) {
       print('TON Service initialization error: $e');
@@ -39,11 +33,15 @@ class TonService {
       );
 
       final result = await _provider.request(
-        TonCenterRunGetMethod(walletAddress, 'get_wallet_data', []),
+        TonCenterRunGetMethod(
+          address: walletAddress,
+          methodName: 'get_wallet_data',
+          stack: [],
+        ),
       );
 
-      if (result != null && result.stack.isNotEmpty) {
-        return result.stack.first.readBigNumber();
+      if (result.stack.isNotEmpty) {
+        return BigInt.parse(result.stack.first.toString());
       }
       return BigInt.zero;
     } catch (e) {
@@ -56,14 +54,14 @@ class TonService {
     try {
       final result = await _provider.request(
         TonCenterRunGetMethod(
-          energyContractAddress,
-          'get_energy',
-          [TonAddress(playerAddress).toCell()],
+          address: energyContractAddress,
+          methodName: 'get_energy',
+          stack: [playerAddress],
         ),
       );
 
-      if (result != null && result.stack.isNotEmpty) {
-        return result.stack.first.readNumber();
+      if (result.stack.isNotEmpty) {
+        return int.parse(result.stack.first.toString());
       }
       return 100; // Начальная энергия
     } catch (e) {

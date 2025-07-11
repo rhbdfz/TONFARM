@@ -33,9 +33,7 @@ class NFTRepository {
           .doc(toolId)
           .get();
 
-      if (doc.data == null) return null;
-
-      return ToolNFT.fromMap(doc.data!);
+      return ToolNFT.fromMap(doc.data()!);
     } catch (e) {
       throw Exception('Failed to get tool: $e');
     }
@@ -48,9 +46,7 @@ class NFTRepository {
           .doc(landId)
           .get();
 
-      if (doc.data == null) return null;
-
-      return LandNFT.fromMap(doc.data!);
+      return LandNFT.fromMap(doc.data()!);
     } catch (e) {
       throw Exception('Failed to get land: $e');
     }

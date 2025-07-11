@@ -34,7 +34,7 @@ class FirebaseService {
   static Future<Map<String, dynamic>?> getPlayer(String playerId) async {
     try {
       final doc = await _firestore.collection('players').doc(playerId).get();
-      return doc.data;
+      return doc.data();
     } catch (e) {
       throw Exception('Failed to get player: $e');
     }
@@ -59,7 +59,7 @@ class FirebaseService {
       await _firestore
           .collection('game_states')
           .doc(playerId)
-          .set(state, SetOptions(merge: true));
+          .set(state);
     } catch (e) {
       throw Exception('Failed to save game state: $e');
     }
@@ -71,7 +71,7 @@ class FirebaseService {
           .collection('game_states')
           .doc(playerId)
           .get();
-      return doc.data;
+      return doc.data();
     } catch (e) {
       throw Exception('Failed to get game state: $e');
     }
@@ -81,7 +81,7 @@ class FirebaseService {
     try {
       final query = await _firestore
           .collection('players')
-          .where('telegramId', isEqualTo: telegramId)
+          .where(WhereFilter('telegramId', '==', telegramId))
           .limit(1)
           .get();
 

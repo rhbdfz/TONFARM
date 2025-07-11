@@ -5,7 +5,7 @@ import '../services/firebase_service.dart';
 import '../services/ton_service.dart';
 import '../models/player_model.dart';
 import '../models/game_state_model.dart';
-import '../utils/recipe_calculator.dart';
+import '../services/websocket_service.dart';
 
 class PlayerController {
   Future<Response> register(Request request) async {
