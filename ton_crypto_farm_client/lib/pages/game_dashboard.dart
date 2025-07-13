@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../conponents/energy_bar.dart';
-import '../conponents/resource_display.dart';
-import '../conponents/tool_inventory.dart';
+import '../components/energy_bar.dart';
+import '../components/resource_display.dart';
+import '../components/tool_inventory.dart';
 import '../providers/game_provider.dart';
 
 class GameDashboard extends StatelessWidget {

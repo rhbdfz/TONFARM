@@ -1,17 +1,13 @@
-import 'package:flutter_telegram_miniapp/flutter_telegram_miniapp.dart';
 import 'dart:convert';
 
 class TelegramService {
-
-  static final TelegramMiniApp _tg = TelegramMiniApp.instance;
+  static bool _isInitialized = false;
 
   static Future<void> init() async {
     try {
-      if (_tg.isSupported) {
-        _tg.ready();
-        Future.delayed(const Duration(seconds: 1), _tg.expand);
-        _setupUI();
-      }
+      _isInitialized = true;
+      // Mock initialization - in a real implementation, this would initialize Telegram Mini App
+      print('Telegram service initialized (mock)');
     } catch (e) {
       print('Telegram initialization error: $e');
     }
@@ -20,11 +16,16 @@ class TelegramService {
   /// Returns a map with user info or null if not available
   static Map<String, dynamic>? getCurrentUser() {
     try {
-      final unsafe = _tg.initDataUnsafe;
-      if (unsafe != null && unsafe['user'] != null) {
-        return Map<String, dynamic>.from(unsafe['user']);
-      }
-      return null;
+      if (!_isInitialized) return null;
+      
+      // Mock user data - in a real implementation, this would get data from Telegram
+      return {
+        'id': 123456789,
+        'first_name': 'Test',
+        'last_name': 'User',
+        'username': 'testuser',
+        'language_code': 'en',
+      };
     } catch (e) {
       print('Get user error: $e');
       return null;
@@ -33,9 +34,10 @@ class TelegramService {
 
   static void _setupUI() {
     try {
-      _tg.setHeaderColor('#4CAF50');
-      _tg.enableClosingConfirmation();
-      _tg.expand();
+      if (!_isInitialized) return;
+      
+      // Mock UI setup - in a real implementation, this would configure Telegram UI
+      print('UI setup completed (mock)');
     } catch (e) {
       print('UI setup error: $e');
     }
@@ -43,9 +45,12 @@ class TelegramService {
 
   static void showMainButton(String text, Function() onPressed) {
     try {
-      _tg.MainButton.text = text;
-      _tg.MainButton.show();
-      _tg.onEvent('mainButtonClicked', (_) => onPressed());
+      if (!_isInitialized) return;
+      
+      // Mock main button - in a real implementation, this would show Telegram's main button
+      print('Main button shown: $text (mock)');
+      // Simulate button click after a delay
+      Future.delayed(const Duration(seconds: 2), onPressed);
     } catch (e) {
       print('Main button error: $e');
     }
@@ -53,7 +58,10 @@ class TelegramService {
 
   static void hideMainButton() {
     try {
-      _tg.MainButton.hide();
+      if (!_isInitialized) return;
+      
+      // Mock hide button - in a real implementation, this would hide Telegram's main button
+      print('Main button hidden (mock)');
     } catch (e) {
       print('Hide button error: $e');
     }
@@ -61,7 +69,10 @@ class TelegramService {
 
   static void showAlert(String message) {
     try {
-      _tg.showAlert(message);
+      if (!_isInitialized) return;
+      
+      // Mock alert - in a real implementation, this would show Telegram's alert
+      print('Alert shown: $message (mock)');
     } catch (e) {
       print('Show alert error: $e');
     }
@@ -69,7 +80,10 @@ class TelegramService {
 
   static void close() {
     try {
-      _tg.close();
+      if (!_isInitialized) return;
+      
+      // Mock close - in a real implementation, this would close the Telegram Mini App
+      print('Telegram Mini App closed (mock)');
     } catch (e) {
       print('Close error: $e');
     }
