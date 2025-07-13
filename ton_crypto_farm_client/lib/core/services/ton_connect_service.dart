@@ -5,18 +5,18 @@ class TonConnectService {
   factory TonConnectService() => _instance;
   TonConnectService._internal();
 
-  late TonConnect _tonConnect;
+  late TonConnectManager _tonConnectManager;
   bool _isInitialized = false;
 
-  String? get walletAddress => _tonConnect.wallet?.account.address;
-  bool get isConnected => _tonConnect.wallet != null;
+  String? get walletAddress => _tonConnectManager.connectedWalletInfo?.account?.address;
+  bool get isConnected => _tonConnectManager.isConnected;
 
   Future<void> initialize() async {
     if (_isInitialized) return;
     
     try {
-      _tonConnect = TonConnect(manifestUrl: 'https://your-app.com/tonconnect-manifest.json');
-      await _tonConnect.restoreConnection();
+      _tonConnectManager = TonConnectManager('https://your-app.com/tonconnect-manifest.json');
+      await _tonConnectManager.connector.restoreConnection();
       _isInitialized = true;
     } catch (e) {
       print('TonConnect initialization error: $e');
@@ -26,9 +26,9 @@ class TonConnectService {
   Future<bool> connectWallet() async {
     try {
       await initialize();
-      final wallets = await _tonConnect.getWallets();
-      if (wallets.isNotEmpty) {
-        await _tonConnect.connect(wallets.first);
+      final wallets = await _tonConnectManager.getWallets();
+      if (wallets != null && wallets.isNotEmpty) {
+        await _tonConnectManager.connect(wallets.first);
         return true;
       }
       return false;
@@ -40,7 +40,7 @@ class TonConnectService {
 
   Future<void> disconnect() async {
     try {
-      await _tonConnect.disconnect();
+      await _tonConnectManager.disconnect();
     } catch (e) {
       print('Wallet disconnection error: $e');
     }
@@ -59,7 +59,7 @@ class TonConnectService {
         ]
       };
       
-      final result = await _tonConnect.sendTransaction(transaction);
+      final result = await _tonConnectManager.sendTransaction(transaction);
       return result?.toString();
     } catch (e) {
       print('Transaction error: $e');
@@ -70,7 +70,7 @@ class TonConnectService {
   Future<BigInt> getBalance(String address) async {
     try {
       await initialize();
-      final balance = await _tonConnect.getBalance(address);
+      final balance = await _tonConnectManager.getBalance(address);
       return BigInt.parse(balance);
     } catch (e) {
       print('Balance error: $e');
@@ -81,7 +81,7 @@ class TonConnectService {
   Future<dynamic> callContract(String address, String method, List<dynamic> params) async {
     try {
       await initialize();
-      return await _tonConnect.runGetMethod(address: address, method: method, params: params);
+      return await _tonConnectManager.runGetMethod(address: address, method: method, params: params);
     } catch (e) {
       print('Contract call error: $e');
       return null;

@@ -1,15 +1,12 @@
 
 import 'package:darttonconnect_plus/darttonconnect_plus.dart';
 
-import 'package:ton_dart/ton_dart.dart';
-
 class TonService {
-  static late TonConnect _tonConnect;
-  static late TonProvider _tonProvider;
+  static late TonConnectManager _tonConnectManager;
 
   static Future<void> init() async {
     try {
-      _tonConnect = TonConnect(manifestUrl: 'https://your-app.com/tonconnect-manifest.json');
+      _tonConnectManager = TonConnectManager('https://your-app.com/tonconnect-manifest.json');
 
       // darttonconnect_plus handles provider internally if needed
     } catch (e) {
@@ -19,9 +16,9 @@ class TonService {
 
   Future<dynamic> connectWallet() async {
     try {
-      final wallets = await _tonConnect.getWallets();
-      if (wallets.isNotEmpty) {
-        return await _tonConnect.connect(wallets.first);
+      final wallets = await _tonConnectManager.getWallets();
+      if (wallets != null && wallets.isNotEmpty) {
+        return await _tonConnectManager.connect(wallets.first);
       }
       return null;
     } catch (e) {
@@ -32,7 +29,7 @@ class TonService {
 
   Future<String?> sendTransaction(Map<String, dynamic> transaction) async {
     try {
-      final result = await _tonConnect.sendTransaction(transaction);
+      final result = await _tonConnectManager.sendTransaction(transaction);
       return result?.toString();
     } catch (e) {
       print('Transaction error: $e');
@@ -42,7 +39,7 @@ class TonService {
 
   Future<BigInt> getBalance(String address) async {
     try {
-      final balance = await _tonConnect.getBalance(address);
+      final balance = await _tonConnectManager.getBalance(address);
       return BigInt.parse(balance);
     } catch (e) {
       print('Balance error: $e');
@@ -56,7 +53,7 @@ class TonService {
       List<dynamic> params,
       ) async {
     try {
-      return await _tonConnect.runGetMethod(address: address, method: method, params: params);
+      return await _tonConnectManager.runGetMethod(address: address, method: method, params: params);
     } catch (e) {
       print('Contract call error: $e');
       return null;
@@ -69,7 +66,7 @@ class TonService {
         playerAddress,
         jettonMaster,
       );
-      final result = await _tonConnect.runGetMethod(address: walletAddress, method: 'get_wallet_data', params: []);
+      final result = await _tonConnectManager.runGetMethod(address: walletAddress, method: 'get_wallet_data', params: []);
       if (result != null && result.isNotEmpty) {
         final firstItem = result[0];
         if (firstItem is String) {
