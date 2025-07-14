@@ -209,14 +209,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0"
-  darttonconnect_plus:
+  darttonconnect:
     dependency: "direct main"
     description:
-      name: darttonconnect_plus
-      sha256: "2223a20f3d617a719dcd686548aa38d3662fe23fe9260162a3c97adea2136c07"
+      name: darttonconnect
+      sha256: "9058b08e9ca2e7a24581ccbd15fa73ff3e2c051bc41f10228cd142eda534d73b"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.3"
   dio:
     dependency: transitive
     description:
@@ -340,10 +340,10 @@ packages:
     dependency: "direct main"
     description:
       name: http
-      sha256: "2c11f3f94c687ee9bad77c171151672986360b2b001d109814ee7140b2cf261b"
+      sha256: "5895291c13fa8a3bd82e76d5627f69e0d85ca6a30dcac95c4ea19a5d555879c2"
       url: "https://pub.dev"
     source: hosted
-    version: "1.4.0"
+    version: "0.13.6"
   http_multi_server:
     dependency: transitive
     description:
@@ -556,10 +556,10 @@ packages:
     dependency: transitive
     description:
       name: pinenacl
-      sha256: "57e907beaacbc3c024a098910b6240758e899674de07d6949a67b52fd984cbdf"
+      sha256: "3a5503637587d635647c93ea9a8fecf48a420cc7deebe6f1fc85c2a5637ab327"
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.0"
+    version: "0.5.1"
   platform:
     dependency: transitive
     description:
@@ -576,14 +576,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
-  pointycastle:
-    dependency: transitive
-    description:
-      name: pointycastle
-      sha256: "4be0097fcf3fd3e8449e53730c631200ebc7b88016acecab2b0da2f0149222fe"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.9.1"
   pool:
     dependency: transitive
     description:
@@ -805,14 +797,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.0"
-  tonutils:
-    dependency: transitive
-    description:
-      name: tonutils
-      sha256: ee1a92dcf2969a16d9d2ce3b2d888fbf609431d0dd482debb6efe568d2d27532
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.5.7"
   typed_data:
     dependency: transitive
     description:

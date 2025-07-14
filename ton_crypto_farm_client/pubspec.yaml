@@ -34,14 +34,14 @@ dependencies:
   # Telegram Mini App
 
   # TON Connect
-  darttonconnect_plus: ^1.0.0
+  darttonconnect: ^1.0.1
   ton_dart: ^1.8.0
 
   # State Management
   provider: ^6.1.5
 
   # HTTP & WebSocket
-  http: ^1.0.0
+  http: ^0.13.6
   web_socket_channel: ^3.0.3
 
   # UI

@@ -1,4 +1,5 @@
-import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 
 class TelegramService {
   static bool _isInitialized = false;
@@ -7,9 +8,9 @@ class TelegramService {
     try {
       _isInitialized = true;
       // Mock initialization - in a real implementation, this would initialize Telegram Mini App
-      print('Telegram service initialized (mock)');
+      debugPrint('Telegram service initialized (mock)');
     } catch (e) {
-      print('Telegram initialization error: $e');
+      debugPrint('Telegram initialization error: $e');
     }
   }
 
@@ -27,32 +28,23 @@ class TelegramService {
         'language_code': 'en',
       };
     } catch (e) {
-      print('Get user error: $e');
+      debugPrint('Get user error: $e');
       return null;
     }
   }
 
-  static void _setupUI() {
-    try {
-      if (!_isInitialized) return;
-      
-      // Mock UI setup - in a real implementation, this would configure Telegram UI
-      print('UI setup completed (mock)');
-    } catch (e) {
-      print('UI setup error: $e');
-    }
-  }
+
 
   static void showMainButton(String text, Function() onPressed) {
     try {
       if (!_isInitialized) return;
       
       // Mock main button - in a real implementation, this would show Telegram's main button
-      print('Main button shown: $text (mock)');
+      debugPrint('Main button shown: $text (mock)');
       // Simulate button click after a delay
       Future.delayed(const Duration(seconds: 2), onPressed);
     } catch (e) {
-      print('Main button error: $e');
+      debugPrint('Main button error: $e');
     }
   }
 
@@ -61,9 +53,9 @@ class TelegramService {
       if (!_isInitialized) return;
       
       // Mock hide button - in a real implementation, this would hide Telegram's main button
-      print('Main button hidden (mock)');
+      debugPrint('Main button hidden (mock)');
     } catch (e) {
-      print('Hide button error: $e');
+      debugPrint('Hide button error: $e');
     }
   }
 
@@ -72,9 +64,9 @@ class TelegramService {
       if (!_isInitialized) return;
       
       // Mock alert - in a real implementation, this would show Telegram's alert
-      print('Alert shown: $message (mock)');
+      debugPrint('Alert shown: $message (mock)');
     } catch (e) {
-      print('Show alert error: $e');
+      debugPrint('Show alert error: $e');
     }
   }
 
@@ -83,9 +75,9 @@ class TelegramService {
       if (!_isInitialized) return;
       
       // Mock close - in a real implementation, this would close the Telegram Mini App
-      print('Telegram Mini App closed (mock)');
+      debugPrint('Telegram Mini App closed (mock)');
     } catch (e) {
-      print('Close error: $e');
+      debugPrint('Close error: $e');
     }
   }
 }

@@ -2,13 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'dart:convert';
 import '../core/services/api_service.dart';
-import '../core/services/ton_service.dart';
+import '../core/services/ton_connect_service.dart';
 import '../core/services/telegram_service.dart';
 import '../core/models/game_models.dart';
 
 class GameProvider extends ChangeNotifier {
   final ApiService _apiService = ApiService();
-  final TonService _tonService = TonService();
 
   Player? _player;
   GameState? _gameState;
@@ -66,19 +65,9 @@ class GameProvider extends ChangeNotifier {
     _clearError();
 
     try {
-      await TonService.init();
-      final result = await _tonService.connectWallet();
-
-      if (result != null && _player != null) {
-        // Handle the dynamic result - extract address if available
-        String? walletAddress;
-        if (result is Map<String, dynamic>) {
-          walletAddress = result['address'] as String?;
-        } else if (result.toString().contains('address')) {
-          // Fallback for other result types
-          walletAddress = result.toString();
-        }
-        
+      final result = await TonConnectService().connectWallet();
+      if (result && _player != null) {
+        final walletAddress = TonConnectService().walletAddress;
         if (walletAddress != null) {
           await _apiService.linkWallet(_player!.id, walletAddress);
           _player = Player(
@@ -114,8 +103,9 @@ class GameProvider extends ChangeNotifier {
 
       final craftTransaction = await _apiService.prepareCraftTransaction(craftRequest);
 
-      final txResult = await _tonService.sendTransaction(
-        craftTransaction.toTonTransaction(),
+      final txResult = await TonConnectService().sendTransaction(
+        craftTransaction.contractAddress,
+        craftTransaction.message['data'],
       );
 
       if (txResult != null) {
@@ -147,8 +137,9 @@ class GameProvider extends ChangeNotifier {
 
       final harvestTransaction = await _apiService.prepareHarvestTransaction(harvestRequest);
 
-      final txResult = await _tonService.sendTransaction(
-        harvestTransaction.toTonTransaction(),
+      final txResult = await TonConnectService().sendTransaction(
+        harvestTransaction.contractAddress,
+        harvestTransaction.message['data'],
       );
 
       if (txResult != null) {
@@ -178,18 +169,18 @@ class GameProvider extends ChangeNotifier {
             final update = GameUpdate.fromJson(jsonDecode(data));
             _handleGameUpdate(update);
           } catch (e) {
-            print('WebSocket parse error: $e');
+            debugPrint('WebSocket parse error: $e');
           }
         },
         onError: (error) {
-          print('WebSocket error: $error');
+          debugPrint('WebSocket error: $error');
         },
         onDone: () {
-          print('WebSocket connection closed');
+          debugPrint('WebSocket connection closed');
         },
       );
     } catch (e) {
-      print('WebSocket setup error: $e');
+      debugPrint('WebSocket setup error: $e');
     }
   }
 
