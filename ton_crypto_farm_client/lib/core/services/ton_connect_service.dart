@@ -1,3 +1,4 @@
+import 'package:darttonconnect/models/wallet_app.dart';
 import 'package:darttonconnect/ton_connect.dart';
 import 'package:darttonconnect/exceptions.dart';
 import 'package:flutter/foundation.dart';
@@ -96,11 +97,11 @@ class TonConnectService {
   }
 
   /// Connect to a specific wallet
-  Future<bool> connectWallet([dynamic? wallet]) async {
+  Future<bool> connectWallet([WalletApp? wallet]) async {
     try {
       await initialize();
       
-      List<Wallet> wallets;
+      List<WalletApp> wallets;
       if (wallet != null) {
         wallets = [wallet];
       } else {
