@@ -65,9 +65,18 @@ class GameProvider extends ChangeNotifier {
     _clearError();
 
     try {
-      final result = await TonConnectService().connectWallet();
+      final tonConnectService = TonConnectService();
+      
+      // Get available wallets first
+      final wallets = await tonConnectService.getAvailableWallets();
+      if (wallets.isEmpty) {
+        throw Exception('No wallets available');
+      }
+
+      // Connect to the first available wallet
+      final result = await tonConnectService.connectWallet(wallets.first);
       if (result && _player != null) {
-        final walletAddress = TonConnectService().walletAddress;
+        final walletAddress = tonConnectService.walletAddress;
         if (walletAddress != null) {
           await _apiService.linkWallet(_player!.id, walletAddress);
           _player = Player(
@@ -104,8 +113,9 @@ class GameProvider extends ChangeNotifier {
       final craftTransaction = await _apiService.prepareCraftTransaction(craftRequest);
 
       final txResult = await TonConnectService().sendTransaction(
-        craftTransaction.contractAddress,
-        craftTransaction.message['data'],
+        contractAddress: craftTransaction.contractAddress,
+        amount: '0', // No TON transfer for crafting
+        payload: craftTransaction.message['data'],
       );
 
       if (txResult != null) {
@@ -138,8 +148,9 @@ class GameProvider extends ChangeNotifier {
       final harvestTransaction = await _apiService.prepareHarvestTransaction(harvestRequest);
 
       final txResult = await TonConnectService().sendTransaction(
-        harvestTransaction.contractAddress,
-        harvestTransaction.message['data'],
+        contractAddress: harvestTransaction.contractAddress,
+        amount: '0', // No TON transfer for harvesting
+        payload: harvestTransaction.message['data'],
       );
 
       if (txResult != null) {
