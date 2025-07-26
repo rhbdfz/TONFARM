@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ton_crypto_farm/components/wallet_connect_widget.dart';
 import 'core/services/ton_service.dart';
 import 'core/services/api_service.dart';
 import 'core/services/telegram_service.dart';
@@ -32,7 +33,7 @@ class TONFarmApp extends StatelessWidget {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.system,
-        home: const InitializationScreen(),
+        home: const WalletConnectWidget(), //InitializationScreen(),
         debugShowCheckedModeBanner: false,
       ),
     );
