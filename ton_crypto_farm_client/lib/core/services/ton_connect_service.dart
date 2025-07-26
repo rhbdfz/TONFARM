@@ -1,5 +1,6 @@
 import 'package:darttonconnect/ton_connect.dart';
-import 'package:darttonconnect/models/send_transaction_request.dart';
+import 'package:darttonconnect/exceptions.dart';
+import 'package:darttonconnect/logger.dart';
 import 'package:flutter/foundation.dart';
 
 class TonConnectService {
