@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ton_crypto_farm/components/wallet_connect_widget.dart';
-import 'core/services/ton_service.dart';
 import 'core/services/api_service.dart';
 import 'core/services/telegram_service.dart';
 import 'providers/game_provider.dart';
-import 'pages/initialization_screen.dart';
+
 import 'core/theme/app_theme.dart';
 
 void main() async {
@@ -25,7 +24,6 @@ class TONFarmApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => GameProvider()),
-        Provider(create: (_) => TonService()),
         Provider(create: (_) => ApiService()),
       ],
       child: MaterialApp(

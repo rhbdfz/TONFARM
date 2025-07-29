@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import '../core/services/ton_connect_service.dart';
 import '../core/services/ton_connect_utils.dart';
@@ -13,14 +15,17 @@ class WalletConnectWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<WalletConnectWidget> createState() => _WalletConnectWidgetState();
+  State<WalletConnectWidget> createState() =>
+      _WalletConnectWidgetState();
 }
 
-class _WalletConnectWidgetState extends State<WalletConnectWidget> {
+class _WalletConnectWidgetState
+    extends State<WalletConnectWidget> {
   final TonConnectService _tonConnectService = TonConnectService();
   bool _isConnecting = false;
   String? _error;
   List<String> _availableWallets = [];
+  double _balance = 0.0;
 
   @override
   void initState() {
@@ -31,7 +36,8 @@ class _WalletConnectWidgetState extends State<WalletConnectWidget> {
 
   void _setupListeners() {
     // Listen to connection status changes
-    _tonConnectService.connectionStatusStream.listen((isConnected) {
+    _tonConnectService.connectionStatusStream.listen((
+        isConnected) {
       if (mounted) {
         setState(() {});
         if (isConnected) {
@@ -75,9 +81,11 @@ class _WalletConnectWidgetState extends State<WalletConnectWidget> {
 
   Future<void> _loadAvailableWallets() async {
     try {
-      final wallets = await _tonConnectService.getAvailableWallets();
+      final wallets = await _tonConnectService
+          .getAvailableWallets();
       setState(() {
-        _availableWallets = wallets.map((w) => TonConnectUtils.getWalletDisplayName(w)).toList();
+        _availableWallets = wallets.map((w) =>
+            TonConnectUtils.getWalletDisplayName(w)).toList();
       });
     } catch (e) {
       setState(() {
@@ -96,6 +104,7 @@ class _WalletConnectWidgetState extends State<WalletConnectWidget> {
       final result = await _tonConnectService.connectWallet();
       if (!result) {
         setState(() {
+          print('Failed to connect wallet');
           _error = 'Failed to connect wallet';
         });
       }
@@ -136,25 +145,33 @@ class _WalletConnectWidgetState extends State<WalletConnectWidget> {
             Row(
               children: [
                 Icon(
-                  isConnected ? Icons.account_balance_wallet : Icons.account_balance_wallet_outlined,
-                  color: isConnected ? Colors.green : Colors.grey,
+                  isConnected
+                      ? Icons.account_balance_wallet
+                      : Icons.account_balance_wallet_outlined,
+                  color: isConnected ? Colors.green : Colors
+                      .grey,
                 ),
                 const SizedBox(width: 8),
                 Text(
                   'TON Wallet',
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .titleMedium,
                 ),
                 const Spacer(),
                 if (isConnected)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: Colors.green,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Text(
                       'Connected',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
+                      style: TextStyle(
+                          color: Colors.white, fontSize: 12),
                     ),
                   ),
               ],
@@ -163,7 +180,11 @@ class _WalletConnectWidgetState extends State<WalletConnectWidget> {
             if (isConnected && walletAddress != null) ...[
               Text(
                 'Address:',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(
                   color: Colors.grey[600],
                 ),
               ),
@@ -178,8 +199,12 @@ class _WalletConnectWidgetState extends State<WalletConnectWidget> {
                   children: [
                     Expanded(
                       child: Text(
-                        TonConnectUtils.formatAddress(walletAddress),
-                        style: const TextStyle(fontFamily: 'monospace'),
+                        TonConnectUtils.formatAddress(
+                            walletAddress),
+                        style: const TextStyle(
+                            fontFamily: 'monospace',
+                            color: Colors.black,
+                            fontSize: 12),
                       ),
                     ),
                     IconButton(
@@ -204,44 +229,60 @@ class _WalletConnectWidgetState extends State<WalletConnectWidget> {
                   child: const Text('Disconnect Wallet'),
                 ),
               ),
-            ] else ...[
-              if (_availableWallets.isNotEmpty) ...[
-                Text(
-                  'Available Wallets:',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.grey[600],
+            ] else
+              ...[
+                if (_availableWallets.isNotEmpty) ...[
+                  Text(
+                    'Available Wallets:',
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ...(_availableWallets.take(3).map((wallet) =>
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            bottom: 4),
+                        child: Text('• $wallet'),
+                      ))),
+                  if (_availableWallets.length > 3)
+                    Text('... and ${_availableWallets.length -
+                        3} more'),
+                  const SizedBox(height: 12),
+                ],
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _isConnecting
+                        ? null
+                        : _connectWallet,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: _isConnecting
+                        ? const Row(
+                      mainAxisAlignment: MainAxisAlignment
+                          .center,
+                      children: [
+                        SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2),
+                        ),
+                        SizedBox(width: 8),
+                        Text('Connecting...'),
+                      ],
+                    )
+                        : const Text('Connect Wallet'),
                   ),
                 ),
-                const SizedBox(height: 8),
-                ...(_availableWallets.take(3).map((wallet) => Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  child: Text('• $wallet'),
-                ))),
-                if (_availableWallets.length > 3)
-                  Text('... and ${_availableWallets.length - 3} more'),
-                const SizedBox(height: 12),
               ],
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _isConnecting ? null : _connectWallet,
-                  child: _isConnecting
-                      ? const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            ),
-                            SizedBox(width: 8),
-                            Text('Connecting...'),
-                          ],
-                        )
-                      : const Text('Connect Wallet'),
-                ),
-              ),
-            ],
             if (_error != null) ...[
               const SizedBox(height: 12),
               Container(
@@ -253,18 +294,51 @@ class _WalletConnectWidgetState extends State<WalletConnectWidget> {
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.error, color: Colors.red[600], size: 16),
+                    Icon(Icons.error, color: Colors.red[600],
+                        size: 16),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         _error!,
-                        style: TextStyle(color: Colors.red[700], fontSize: 12),
+                        style: TextStyle(color: Colors.red[700],
+                            fontSize: 12),
                       ),
                     ),
                   ],
                 ),
               ),
             ],
+            const SizedBox(height: 12),
+            if (isConnected && walletAddress != null)
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _balance = 0.0; // Reset balance
+                  });
+                  _tonConnectService.getAddressBalance(walletAddress)
+                      .then((balance) {
+                    if (mounted) {
+                      setState(() {
+                        _balance = _tonConnectService.nanoTonToTon(balance);
+                      });
+                    }
+                  }).catchError((error) {
+                    setState(() {
+                      _error = 'Failed to get balance: $error';
+                    });
+                  });
+                },
+                child: Text('View Balance'),
+              ),
+            if (isConnected)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  'Balance: $_balance TON',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+
           ],
         ),
       ),

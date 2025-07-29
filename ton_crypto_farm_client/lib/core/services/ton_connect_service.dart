@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:darttonconnect/ton_connect.dart';
 import 'package:darttonconnect/models/wallet_app.dart';
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'dart:async';
 
 import 'package:ton_crypto_farm/core/services/ton_connect_utils.dart';
@@ -12,6 +15,9 @@ class TonConnectService {
 
   late TonConnect _tonConnect;
   bool _isInitialized = false;
+
+
+  static const apiKey = '9451288cb13613059ddd3dbfcf6ff97df2e181df9dcd95fe3bbdc52761e5687e'; // Замените на ваш API ключ
 
   final StreamController<bool> _connectionStatusController = StreamController<bool>.broadcast();
   final StreamController<String?> _walletAddressController = StreamController<String?>.broadcast();
@@ -29,7 +35,7 @@ class TonConnectService {
   Future<void> initialize() async {
     if (_isInitialized) return;
     try {
-      const manifestUrl = 'D:\\TONFARM\\TONFARM\\ton_crypto_farm_client\\web\\tonconnect-manifest.json';//'https://your-app.com/tonconnect-manifest.json';
+      const manifestUrl = 'https://gist.githubusercontent.com/romanovichim/e81d599a6f3798bb9f74ab1970a8b376/raw/43e00b0abc824ef272ac6d0f8083d21456602adf/gistfiletest.txt';
       _tonConnect = TonConnect(manifestUrl);
 
       // Подписка на изменение статуса
@@ -68,7 +74,8 @@ class TonConnectService {
         _errorController.add('Нет доступных кошельков');
         return false;
       }
-      await _tonConnect.connect(wallet ?? wallets.first);
+      final result = await  _tonConnect.connect(wallets.first);    //(wallet ?? wallets.first);
+      print('Login link: $result');
       return true;
     } catch (e) {
       _errorController.add('Ошибка подключения: $e');
@@ -153,17 +160,40 @@ class TonConnectService {
   }
 
   /// Get account balance using TON API
-  Future<BigInt> getBalance(String address) async {
+  Future<String> getAddressBalance(String address) async {
     try {
-      // This would typically use a TON API service
-      // For now, return zero as placeholder
-      debugPrint('Getting balance for address: $address');
-      return BigInt.zero;
+      // Формируем URL для запроса
+      final baseUrl = 'https://toncenter.com/api/v2/getAddressBalance';
+      final uri = apiKey != null
+          ? Uri.parse('$baseUrl?address=$address&api_key=$apiKey')
+          : Uri.parse('$baseUrl?address=$address');
+
+      // Выполняем GET-запрос
+      final response = await http.get(uri);
+
+      // Проверяем статус ответа
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+
+        // Проверяем успешность запроса
+        if (jsonData['ok'] == true) {
+          final balanceNano = jsonData['result'];
+          return balanceNano; // Возвращаем баланс в nanoTON
+        } else {
+          throw Exception('API Error: ${jsonData['description'] ?? 'Unknown error'}');
+        }
+      } else {
+        throw Exception('HTTP Error: ${response.statusCode} - ${response.body}');
+      }
     } catch (e) {
-      debugPrint('Balance error: $e');
-      _errorController.add('Failed to get balance: $e');
-      return BigInt.zero;
+      throw Exception('Network Error: $e');
     }
+  }
+
+  /// Конвертация nanoTON в TON
+  double nanoTonToTon(String nanoTonString) {
+    final nanoTon = BigInt.parse(nanoTonString);
+    return nanoTon.toDouble() / 1000000000; // 1 TON = 1,000,000,000 nanoTON
   }
 
   /// Call a smart contract method
