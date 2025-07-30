@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ton_crypto_farm/components/resource_display.dart';
+import 'package:ton_crypto_farm/components/tool_inventory.dart';
 import 'package:ton_crypto_farm/components/wallet_connect_widget.dart';
+import 'core/models/game_models.dart';
 import 'core/services/api_service.dart';
 import 'core/services/telegram_service.dart';
 import 'providers/game_provider.dart';
@@ -19,6 +22,7 @@ void main() async {
 class TONFarmApp extends StatelessWidget {
   const TONFarmApp({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -31,7 +35,7 @@ class TONFarmApp extends StatelessWidget {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.system,
-        home: const WalletConnectWidget(), //InitializationScreen(),
+        home: WalletConnectWidget(),
         debugShowCheckedModeBanner: false,
       ),
     );

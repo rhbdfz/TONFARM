@@ -60,9 +60,9 @@ class GameState {
 
 @JsonSerializable()
 class ResourceBalances {
-  final int food;
-  final int wood;
-  final int gold;
+  int food;
+  int wood;
+  int gold;
 
   ResourceBalances({
     required this.food,
