@@ -1,0 +1,12 @@
+{
+  "url": "https://tonfarm.app",
+  "name": "TON Farm",
+  "iconUrl": "https://tonfarm.app/icon-180.png",
+  "termsOfUseUrl": "https://tonfarm.app/terms",
+  "privacyPolicyUrl": "https://tonfarm.app/privacy",
+  "features": [
+    "ton_addr",
+    "ton_proof",
+    "ton_sendTransaction"
+  ]
+}
